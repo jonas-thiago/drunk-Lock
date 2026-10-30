@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Perfil do usuário DrinkLock." />
+    <title>Meu Perfil — DrinkLock</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/auth.css" />
+  </head>
+  <body class="auth-page">
+    <header class="header">
+      <nav class="navbar container">
+        <a href="../index.html" class="logo">
+          <span class="logo-icon"
+            ><img src="../assets/images/drink.png" alt="Logo do DrinkLock"
+          /></span>
+          <span>Drink<span>Lock</span></span>
+        </a>
+        <div class="nav-actions">
+          <a href="../index.html" class="nav-download">Voltar ao site</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="profile-page">
+      <section class="profile-card">
+        <div class="profile-heading">
+          <p>MINHA CONTA</p>
+          <h1>Perfil</h1>
+          <span>Informações básicas da sua conta.</span>
+        </div>
+
+        <div class="profile-image-container" id="avatarContainer"></div>
+        <!-- Novos elementos para mudar a foto -->
+        <button
+          class="btn-mudar-foto"
+          id="btnMudarFoto"
+          style="
+            margin-bottom: 20px;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+          "
+        >
+          Alterar Foto
+        </button>
+        <input
+          type="file"
+          id="inputFoto"
+          accept="image/*"
+          style="display: none"
+        />
+
+        <h2 id="userName">Carregando...</h2>
+        <p class="profile-email" id="userEmail">Carregando@email.com</p>
+
+        <div class="account-status">
+          <span class="status-dot"></span>
+          <span>Conta ativa</span>
+        </div>
+
+        <div
+          class="historico-container"
+          style="
+            margin-top: 30px;
+            text-align: left;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+          "
+        >
+          <h3 style="margin-bottom: 15px; font-size: 16px; color: #333">
+            Histórico de Acesso
+          </h3>
+          <ul
+            id="listaHistorico"
+            style="list-style: none; padding: 0; font-size: 14px; color: #555"
+          >
+            <li>Carregando histórico...</li>
+          </ul>
+        </div>
+
+        <button
+          type="button"
+          class="logout-button"
+          id="logoutButton"
+          style="margin-top: 20px"
+        >
+          Sair da conta
+        </button>
+      </section>
+    </main>
+
+    <script src="../js/cadastro.js"></script>
+
+    <script>
+      const token = localStorage.getItem("tokenDrunkLock");
+
+      if (!token) {
+        alert("Acesso não autorizado! Faça o login primeiro.");
+        window.location.href = "login.html";
+      } else {
+        // Chamamos as duas funções separadamente!
+        carregarDadosPerfil();
+        carregarHistoricoMongoDB();
+      }
+      // ==========================================
+      // FUNÇÃO 1: Busca os dados no MariaDB
+      // ==========================================
+      function carregarDadosPerfil() {
+        fetch("http://192.168.56.10:3000/api/usuarios/perfil-protegido", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        })
+          .then((resposta) => {
+            if (resposta.status === 401 || resposta.status === 403) {
+              throw new Error("Sessão inválida ou expirada.");
+            }
+            return resposta.json();
+          })
+          .then((dados) => {
+            const usuario = dados.usuario;
+            document.getElementById("userName").textContent = usuario.nome;
+            document.getElementById("userEmail").textContent = usuario.email;
+
+            const avatarContainer = document.getElementById("avatarContainer");
+            const inicial = usuario.nome.charAt(0).toUpperCase();
+
+            avatarContainer.innerHTML = `<span style="font-size: 2.5rem; font-weight: bold; color: #ffffff;">${inicial}</span>`;
+            avatarContainer.style.display = "flex";
+            avatarContainer.style.alignItems = "center";
+            avatarContainer.style.justifyContent = "center";
+            avatarContainer.style.backgroundColor = "#2b5cff";
+            avatarContainer.style.width = "100px";
+            avatarContainer.style.height = "100px";
+            avatarContainer.style.borderRadius = "50%";
+            avatarContainer.style.margin = "0 auto 20px auto";
+          })
+          .catch((erro) => {
+            console.error("Segurança barrou:", erro);
+            alert("Sua sessão expirou. Por favor, faça login novamente.");
+            localStorage.removeItem("usuarioLogado");
+            localStorage.removeItem("tokenDrunkLock");
+            window.location.href = "login.html";
+          });
+      }
+
+      // ==========================================
+      // FUNÇÃO 2: Busca o histórico no MongoDB
+      // ==========================================
+      function carregarHistoricoMongoDB() {
+        fetch("http://192.168.56.10:3000/api/usuarios/historico", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((res) => res.json())
+          .then((logs) => {
+            const lista = document.getElementById("listaHistorico");
+            lista.innerHTML = "";
+
+            if (logs.length === 0) {
+              lista.innerHTML = "<li>Nenhum acesso registrado ainda.</li>";
+              return;
+            }
+
+            logs.forEach((log) => {
+              const dataFormatada = new Date(log.data_hora).toLocaleString(
+                "pt-BR",
+              );
+              const item = document.createElement("li");
+              item.style.padding = "8px 0";
+              item.style.borderBottom = "1px solid #ddd";
+
+              let eventoAmigavel = "";
+              if (log.evento === "LOGIN_SUCESSO") {
+                eventoAmigavel = "✅ Login realizado";
+              } else if (log.evento === "LOGIN_FALHA") {
+                eventoAmigavel = "❌ Tentativa falha";
+              } else {
+                eventoAmigavel = log.evento;
+              }
+
+              item.innerHTML = `<strong>${dataFormatada}</strong> <br> <span style="color: #ccc;">${eventoAmigavel}</span>`;
+
+              lista.appendChild(item);
+            });
+          })
+          .catch((erro) => console.error("Erro ao buscar histórico:", erro));
+      }
+    </script>
+  </body>
+</html>

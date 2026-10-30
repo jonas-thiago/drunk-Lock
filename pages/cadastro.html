@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Crie sua conta DrinkLock.">
+    <title>Criar conta — DrinkLock</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/auth.css">
+</head>
+<body class="auth-page">
+    <header class="header">
+        <nav class="navbar container">
+            <a href="../index.html" class="logo">
+                <span class="logo-icon"><img src="../assets/images/drink.png" alt="Logo do DrinkLock"></span>
+                <span>Drink<span>Lock</span></span>
+            </a>
+            <div class="nav-actions">
+                <a href="login.html" class="login-button">Entrar</a>
+                <a href="../index.html" class="nav-download">Voltar ao site</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="auth-main">
+        <section class="auth-modal">
+            <div class="auth-logo"><img src="../assets/images/drink.png" alt="Logo do DrinkLock"></div>
+
+            <div class="auth-heading">
+                <h2>Crie sua conta</h2>
+                <p>Comece sua proteção gratuitamente.</p>
+            </div>
+
+            <form id="registerForm" class="auth-form">
+                <label>
+                    Nome
+                    <input type="text" id="registerName" placeholder="Seu nome" required>
+                </label>
+
+                <label>
+                    E-mail
+                    <input type="email" id="registerEmail" placeholder="seu@email.com" required>
+                </label>
+
+                <label>
+                    CPF
+                    <input type="cpf" id="registerCpf" placeholder="xxx.xxx.xxx-xx" required>
+                </label>
+
+                <label>
+                    Telefone
+                    <input type="telefone" id="registerTelefone" placeholder="ddd-xxxxx-xxxx" required>
+                </label>
+
+                <label>
+                    Senha
+                    <input type="password" id="registerPassword" placeholder="Crie uma senha" required>
+                </label>
+
+                <label class="terms">
+                    <input type="checkbox" required>
+                    <span>Concordo com os termos de uso.</span>
+                </label>
+
+                <button type="submit" class="auth-submit">Criar conta</button>
+            </form>
+
+            <div class="auth-switch">
+                Já possui uma conta?
+                <a href="login.html">Entrar</a>
+            </div>
+
+            <a href="../index.html" class="auth-back">← Voltar para o início</a>
+        </section>
+    </main>
+
+    <div class="toast" id="toast">
+        <span>✓</span>
+        <p>Mensagem</p>
+    </div>
+
+    <script src="../js/cadastro.js"></script>
+</body>
+</html>

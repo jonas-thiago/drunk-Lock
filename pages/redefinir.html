@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Perfil do usuário DrinkLock." />
+    <title>Meu Perfil — DrinkLock</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/auth.css" />
+  </head>
+  <body class="auth-page">
+    <header class="header">
+      <nav class="navbar container">
+        <a href="../index.html" class="logo">
+          <span class="logo-icon"
+            ><img src="../assets/images/drink.png" alt="Logo do DrinkLock"
+          /></span>
+          <span>Drink<span>Lock</span></span>
+        </a>
+        <div class="nav-actions">
+          <a href="../index.html" class="nav-download">Voltar ao site</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="profile-page">
+      <div
+        style="
+          background: #1e1e1e;
+          padding: 40px;
+          border-radius: 10px;
+          width: 100%;
+          max-width: 400px;
+          text-align: center;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        "
+      >
+        <h2 style="margin-bottom: 20px">Criar Nova Senha</h2>
+        <p style="font-size: 14px; color: #aaa; margin-bottom: 30px">
+          Digite sua nova senha abaixo.
+        </p>
+
+        <form id="formRedefinir">
+          <input
+            type="password"
+            id="novaSenha"
+            placeholder="Nova Senha"
+            required
+            style="
+              width: 100%;
+              padding: 12px;
+              margin-bottom: 15px;
+              border-radius: 5px;
+              border: 1px solid #333;
+              background: #2a2a2a;
+              color: white;
+              box-sizing: border-box;
+            "
+          />
+
+          <input
+            type="password"
+            id="confirmarSenha"
+            placeholder="Confirmar Nova Senha"
+            required
+            style="
+              width: 100%;
+              padding: 12px;
+              margin-bottom: 25px;
+              border-radius: 5px;
+              border: 1px solid #333;
+              background: #2a2a2a;
+              color: white;
+              box-sizing: border-box;
+            "
+          />
+
+          <button
+            type="submit"
+            style="
+              width: 100%;
+              padding: 12px;
+              background-color: #2b5cff;
+              color: white;
+              border: none;
+              border-radius: 5px;
+              font-weight: bold;
+              cursor: pointer;
+            "
+          >
+            Salvar Nova Senha
+          </button>
+        </form>
+
+        <div id="mensagem" style="margin-top: 20px; font-size: 14px"></div>
+      </div>
+    </main>
+
+    <script src="../js/cadastro.js"></script>
+
+    <script>
+      // 1. Pega os parâmetros da URL (tudo que vem depois do '?')
+      const parametrosUrl = new URLSearchParams(window.location.search);
+      const token = parametrosUrl.get("token");
+
+      const mensagemDiv = document.getElementById("mensagem");
+
+      // Se a pessoa abrir a página sem um token na URL, bloqueia o acesso
+      if (!token) {
+        mensagemDiv.innerHTML =
+          "<span style='color: #ff4d4d;'>Link inválido. Nenhum token de segurança fornecido.</span>";
+        document.getElementById("formRedefinir").style.display = "none";
+      }
+
+      // 2. Controla o envio do formulário
+      document
+        .getElementById("formRedefinir")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+
+          const novaSenha = document.getElementById("novaSenha").value;
+          const confirmarSenha =
+            document.getElementById("confirmarSenha").value;
+
+          // Validação simples do front-end
+          if (novaSenha !== confirmarSenha) {
+            mensagemDiv.innerHTML =
+              "<span style='color: #ff4d4d;'>As senhas não coincidem!</span>";
+            return;
+          }
+
+          if (novaSenha.length < 6) {
+            mensagemDiv.innerHTML =
+              "<span style='color: #ff4d4d;'>A senha deve ter pelo menos 6 caracteres.</span>";
+            return;
+          }
+
+          mensagemDiv.innerHTML =
+            "<span style='color: #2b5cff;'>Salvando nova senha...</span>";
+
+          // 3. Envia o token e a nova senha para o back-end (Lembre-se de ajustar o IP)
+          fetch("http://192.168.56.10:3000/api/usuarios/salvar-nova-senha", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token: token, novaSenha: novaSenha }),
+          })
+            .then((res) => res.json())
+            .then((dados) => {
+              if (dados.erro) {
+                mensagemDiv.innerHTML = `<span style='color: #ff4d4d;'>${dados.erro}</span>`;
+              } else {
+                mensagemDiv.innerHTML = `<span style='color: #00cc66;'>${dados.mensagem} <br><br> <a href="login.html" style="color: #2b5cff; text-decoration: none;">Ir para o Login</a></span>`;
+                document.getElementById("formRedefinir").style.display = "none";
+              }
+            })
+            .catch((erro) => {
+              console.error("Erro:", erro);
+              mensagemDiv.innerHTML =
+                "<span style='color: #ff4d4d;'>Erro ao conectar com o servidor.</span>";
+            });
+        });
+    </script>
+  </body>
+</html>

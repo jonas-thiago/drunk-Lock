@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Entrar na sua conta DrinkLock.">
+    <title>Entrar — DrinkLock</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/auth.css">
+</head>
+<body class="auth-page">
+    <header class="header">
+        <nav class="navbar container">
+            <a href="../index.html" class="logo">
+                <span class="logo-icon"><img src="../assets/images/drink.png" alt="Logo do DrinkLock"></span>
+                <span>Drink<span>Lock</span></span>
+            </a>
+            <div class="nav-actions">
+                <a href="cadastro.html" class="login-button">Criar conta</a>
+                <a href="../index.html" class="nav-download">Voltar ao site</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="auth-main">
+        <section class="auth-modal">
+            <div class="auth-logo"><img src="../assets/images/drink.png" alt="Logo do DrinkLock"></div>
+
+            <div class="auth-heading">
+                <h2>Bem-vindo de volta</h2>
+                <p>Entre para continuar sua proteção.</p>
+            </div>
+
+            <form id="loginForm" class="auth-form">
+                <label>
+                    E-mail
+                    <input type="email" id="loginEmail" placeholder="seu@email.com" required>
+                </label>
+
+                <label>
+                    Senha
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                </label>
+
+                <div class="form-options">
+                    <label class="remember">
+                        <input type="checkbox">
+                        <span>Manter conectado</span>
+                    </label>
+                    <a href="#" id="forgotPassword">Esqueci minha senha</a>
+                </div>
+
+                <button type="submit" class="auth-submit">Entrar</button>
+            </form>
+
+            <div class="auth-switch">
+                Ainda não possui conta?
+                <a href="cadastro.html">Criar conta</a>
+            </div>
+
+            <a href="../index.html" class="auth-back">← Voltar para o início</a>
+        </section>
+    </main>
+
+    <div class="toast" id="toast">
+        <span>✓</span>
+        <p>Mensagem</p>
+    </div>
+
+    <script src="../js/cadastro.js"></script>
+</body>
+</html>
